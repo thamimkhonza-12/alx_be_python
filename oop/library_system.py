@@ -1,80 +1,53 @@
-# -----------------------------
-# Library System using OOP
-# Inheritance + Composition
-# -----------------------------
+# ----------------------------------------
+# Library System using Inheritance + Composition
+# ----------------------------------------
 
-class LibraryItem:
-    """Base class for all items in the library."""
+class Book:
+    """Base class for all books."""
 
-    def __init__(self, title, year):
+    def __init__(self, title, author):
         self.title = title
-        self.year = year
-
-    def __str__(self):
-        return f"{self.title} ({self.year})"
-
-
-class Book(LibraryItem):
-    """Book inherits from LibraryItem."""
-
-    def __init__(self, title, year, author):
-        super().__init__(title, year)
         self.author = author
 
     def __str__(self):
-        return f"Book: '{self.title}' by {self.author} ({self.year})"
+        return f"Book: '{self.title}' by {self.author}"
 
 
-class Member:
-    """Represents a library member. Uses composition to hold borrowed items."""
+class EBook(Book):
+    """EBook inherits from Book and adds file size."""
 
-    def __init__(self, name):
-        self.name = name
-        self.borrowed_items = []  # composition: list of LibraryItem objects
-
-    def borrow(self, item):
-        self.borrowed_items.append(item)
+    def __init__(self, title, author, file_size):
+        super().__init__(title, author)
+        self.file_size = file_size  # in MB
 
     def __str__(self):
-        if not self.borrowed_items:
-            return f"{self.name} has borrowed no items."
-
-        borrowed_list = ", ".join(str(item) for item in self.borrowed_items)
-        return f"{self.name} has borrowed: {borrowed_list}"
+        return f"EBook: '{self.title}' by {self.author} - {self.file_size}MB"
 
 
-class LibrarySystem:
-    """Main system that manages members and items."""
+class PrintBook(Book):
+    """PrintBook inherits from Book and adds page count."""
+
+    def __init__(self, title, author, page_count):
+        super().__init__(title, author)
+        self.page_count = page_count
+
+    def __str__(self):
+        return f"PrintBook: '{self.title}' by {self.author} - {self.page_count} pages"
+
+
+class Library:
+    """Demonstrates composition by holding a collection of books."""
 
     def __init__(self):
-        self.members = []
-        self.items = []
+        self.books = []  # list of Book/EBook/PrintBook objects
 
-    def add_member(self, member):
-        self.members.append(member)
+    def add_book(self, book):
+        if isinstance(book, Book):
+            self.books.append(book)
 
-    def add_item(self, item):
-        self.items.append(item)
-
-    def __str__(self):
-        members_str = ", ".join(member.name for member in self.members) or "No members"
-        items_str = ", ".join(item.title for item in self.items) or "No items"
-        return f"Library Members: {members_str}\nLibrary Items: {items_str}"
-
-
-# -----------------------------
-# Example usage (optional)
-# -----------------------------
-if __name__ == "__main__":
-    book1 = Book("1984", 1949, "George Orwell")
-    member1 = Member("Thami")
-
-    library = LibrarySystem()
-    library.add_item(book1)
-    library.add_member(member1)
-
-    member1.borrow(book1)
-
-    print(book1)       # calls __str__
-    print(member1)     # calls __str__
-    print(library)     # calls __str__
+    def list_books(self):
+        if not self.books:
+            print("The library has no books.")
+        else:
+            for book in self.books:
+                print(book)
